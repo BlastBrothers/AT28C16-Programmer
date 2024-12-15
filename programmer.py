@@ -1,8 +1,8 @@
 import os,sys,time
 import serial
 
-def loop(rom_f, ser):
-    chunkSize = 32
+def loop(rom_f, ser): # TODO call this something other than 'loop'
+    chunkSize = 1 #TODO make argument OR figure out best size
     blocks = 2048/chunkSize
     print("# of blocks: " + str(blocks))
     blockCounter = blocks
@@ -14,12 +14,13 @@ def loop(rom_f, ser):
         line = bytearray()
         line.extend(dataBytes)
         ser.write(line)
+        print(line) #TODO instead of just printing this, read the byte from the serial and 
         time.sleep(0.5)
 
 def main():
     ser = serial.Serial(sys.argv[1], 9600)
     print("Waiting for serial...")
-    time.sleep(5)
+    time.sleep(5) #TODO why?? Where does 5 seconds come from? Can we get a callback or something?
     print("Ready to run")
     if (sys.argv[2] == "p"):
         romFileName = sys.argv[3]
