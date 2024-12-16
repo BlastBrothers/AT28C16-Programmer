@@ -4,24 +4,22 @@ import time
 import serial
 
 LEN_OF_FILE = 2048
+CHUNK_SIZE = 32  # amount of data to send over at once
 
 
 def write_file_to_eeprom(rom_f, ser):
-    chunkSize = 64  # This value must be synced with the value on the .ino side
-    blocks = LEN_OF_FILE / chunkSize
+    blocks = LEN_OF_FILE / CHUNK_SIZE
     print("# of blocks: " + str(blocks))
     blockCounter = blocks
     while blockCounter > 0:
         ser.write(b'W')
-        time.sleep(0.5)  # TODO why 0.5 seconds?
         blockCounter -= 1
-        dataBytes = rom_f.read(chunkSize)
+        dataBytes = rom_f.read(CHUNK_SIZE)
         line = bytearray()
         line.extend(dataBytes)
         ser.write(line)
-        # TODO instead of just printing this, read the byte from the serial and print that too - realtime feedback
-        print(line)
-        time.sleep(0.5)  # TODO Again, why 0.5 seconds?
+        print(' '.join(format(b, '02x') for b in line), end=' ')
+        print(ser.read())  # Y or N depending on whether write succeeded
 
 
 def main():
@@ -35,18 +33,21 @@ def main():
             exit(-1)
         rom_f = open(romFileName, "rb")
         write_file_to_eeprom(rom_f, ser)
+
     elif sys.argv[2] == "e":
         ser.write(b'E')
-        print("Erasing - please wait")
-        time.sleep(20)  # TODO get message from Arduino that erase is done instead of 20 second wait
-        print("Erased")
+        print("Erasing EEPROM...")
+        print(ser.readline())
+        print("Erased.")
     elif sys.argv[2] == "r":
-        print("Reading rom")
+        print("Reading EEPROM...")
         ser.write(b'R')
         linecounter = 0
-        while linecounter <= LEN_OF_FILE / 16:
+        ser.readline()  # wait for Arduino to send "SENDING"
+        while linecounter < LEN_OF_FILE / 16:
             print(str(ser.readline()))
             linecounter += 1
+    print("Complete.")
     ser.close()
 
 

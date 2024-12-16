@@ -89,10 +89,6 @@ void eraseEEPROM(void)
   Serial.print("Erasing EEPROM");
   for (int address = 0; address <= 2047; address += 1) {
     writeEEPROM_Byte(address, 0xff);
-
-    if (address % 64 == 0) {
-      Serial.print(".");
-    }
   }
   Serial.println(" done");
 }
