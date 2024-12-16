@@ -157,7 +157,7 @@ void setup() {
       char t = Serial.read();
   }
   /* print message to show ready */
-  Serial.print("READY\0");
+  Serial.write("READY");
   /* set global address */
   global_address = 0x00;
 }
