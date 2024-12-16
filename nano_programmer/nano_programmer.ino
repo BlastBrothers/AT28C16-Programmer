@@ -89,10 +89,6 @@ void eraseEEPROM(void)
   Serial.print("Erasing EEPROM");
   for (int address = 0; address <= 2047; address += 1) {
     writeEEPROM_Byte(address, 0xff);
-
-    if (address % 64 == 0) {
-      Serial.print(".");
-    }
   }
   Serial.println(" done");
 }
@@ -157,7 +153,7 @@ void setup() {
       char t = Serial.read();
   }
   /* print message to show ready */
-  Serial.print("READY\0");
+  Serial.write("READY\n");
   /* set global address */
   global_address = 0x00;
 }
@@ -172,9 +168,9 @@ void loop() {
       case  'E':
         eraseEEPROM();
         break;
-      case  'R':
+      case  'R': //TODO if this is going to stay the same as "D", consolidate. Maybe even revise the API so they're the same?
         Serial.println("Reading EEPROM");
-        printContents(255);
+        printContents(2048);
         Serial.write('Z');
         break;
       case  'W':
