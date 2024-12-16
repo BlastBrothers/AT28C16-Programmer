@@ -1,10 +1,14 @@
-import os, sys, time
+import os
+import sys
+import time
 import serial
+
+LEN_OF_FILE = 2048
 
 
 def write_file_to_eeprom(rom_f, ser):
     chunkSize = 64  # This value must be synced with the value on the .ino side
-    blocks = 2048 / chunkSize
+    blocks = LEN_OF_FILE / chunkSize
     print("# of blocks: " + str(blocks))
     blockCounter = blocks
     while blockCounter > 0:
@@ -32,15 +36,17 @@ def main():
         rom_f = open(romFileName, "rb")
         write_file_to_eeprom(rom_f, ser)
     elif sys.argv[2] == "e":
-        ser.write(b'E')  # TODO is this really all that's required? Check .ino
+        ser.write(b'E')
         print("Erasing - please wait")
-        time.sleep(20)
+        time.sleep(20)  # TODO get message from Arduino that erase is done instead of 20 second wait
         print("Erased")
     elif sys.argv[2] == "r":
         print("Reading rom")
         ser.write(b'R')
-        while True:
+        linecounter = 0
+        while linecounter <= LEN_OF_FILE / 16:
             print(str(ser.readline()))
+            linecounter += 1
     ser.close()
 
 

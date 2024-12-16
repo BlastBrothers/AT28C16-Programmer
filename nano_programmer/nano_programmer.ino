@@ -172,9 +172,9 @@ void loop() {
       case  'E':
         eraseEEPROM();
         break;
-      case  'R':
+      case  'R': //TODO if this is going to stay the same as "D", consolidate. Maybe even revise the API so they're the same?
         Serial.println("Reading EEPROM");
-        printContents(255);
+        printContents(2048);
         Serial.write('Z');
         break;
       case  'W':
