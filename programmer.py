@@ -3,7 +3,7 @@ import serial
 
 
 def write_file_to_eeprom(rom_f, ser):
-    chunkSize = 32  # This value must be synched with the value on the .ino side
+    chunkSize = 64  # This value must be synced with the value on the .ino side
     blocks = 2048 / chunkSize
     print("# of blocks: " + str(blocks))
     blockCounter = blocks
@@ -22,10 +22,8 @@ def write_file_to_eeprom(rom_f, ser):
 
 def main():
     ser = serial.Serial(sys.argv[1], baudrate=9600, inter_byte_timeout=10)
-    print("Waiting for serial. Press reset on Arduino")
-    line = ser.readline()  # wait for response from Arduino
-    print(line)
-    print("Ready to run")
+    print("Waiting for serial...")
+    ser.readline()  # wait for response from Arduino
     if sys.argv[2] == "p":
         romFileName = sys.argv[3]
         if not (os.path.isfile(romFileName)):
