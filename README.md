@@ -1,28 +1,21 @@
 # AT28C16-Programmer
 An arduino nano based AT28C16 programmer.
 
-# Tindie Link!!!
-[AT28C16 Arduino Nano Programmer](https://www.tindie.com/products/gindiamond/at28c16-eeprom-programmer/)
-
 ## Getting Started
 
 To start, make sure you have the latest [Arduino IDE]() and [Python 3]() installed.
 
-Next, make sure you have [pyserial]() installed. In order to install pyserial via pip, issue this command:
+Use Arduino IDE to upload the .ino file to the Arduino.
+
+In order to run the .py file, make sure you have [pyserial]() installed. In order to install pyserial via pip, issue this command:
 
 `$pip install pyserial`
 
 ## Using the Programmer
 
-1. Slot in your arduino nano into the headers so that the USB connector is hanging off the back of the board. If you want to use this programmer to dump an eeprom or examine its conents, now would be a good time to program it with the bin loader before adding in the eeprom.
+This is based on Ben Eater's breadboard design: [GitHub - beneater/eeprom-programmer: Arduino EEPROM programmer](https://github.com/beneater/eeprom-programmer) So, build that.
 
-1. Ensure that the ZIF socket is in the open position (lever bar is UP).
-
-1. Gently install the AT28C16 into the socket, with the notch facing the arduino nano. Be sure that the pins aren't pushing oddly on the metal fins of the socket.
-
-1. Gently close the lever to secure the eeprom in place. It is not a good idea to keep the socket closed for an extended period of time.
-
-1. Connect up the programmer to your computer. The default baud rate is 9600.
+Afterwards, running the .py file with the correct arguments should take care of everything.
 
 ## Using the Software
 
