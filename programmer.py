@@ -26,6 +26,7 @@ def main():
     ser = serial.Serial(sys.argv[1], baudrate=9600, inter_byte_timeout=10)
     print("Waiting for serial...")
     ser.readline()  # wait for response from Arduino
+
     if sys.argv[2] == "p":
         romFileName = sys.argv[3]
         if not (os.path.isfile(romFileName)):
@@ -39,16 +40,62 @@ def main():
         print("Erasing EEPROM...")
         print(ser.readline())
         print("Erased.")
+
     elif sys.argv[2] == "r":
-        print("Reading EEPROM...")
-        ser.write(b'R')
+        print("Dumping EEPROM...")
+
+        ser.write(b'D') # this is actually a dump in disguise!
         linecounter = 0
-        ser.readline()  # wait for Arduino to send "SENDING"
         while linecounter < LEN_OF_FILE / 16:
-            print(str(ser.readline()))
+            d = ser.read(16)
+            pretty_line = format_hexline(d)
+            print(pretty_line)
             linecounter += 1
+
+    elif sys.argv[2] == "d":
+        print("Dumping EEPROM...")
+
+        romFileName = sys.argv[3]
+        if romFileName == None:
+            print("Filename not valid/found")
+            exit(-1)
+
+        if os.path.isfile(romFileName):
+            print("Filename already exists. Overwriting...")
+            os.remove(romFileName)
+
+        rom_f = open(romFileName, "b+a")
+
+        ser.write(b'D')
+        linecounter = 0
+        while linecounter < LEN_OF_FILE / 16:
+            d = ser.read(16)
+            rom_f.write(d)
+            pretty_line = format_hexline(d)
+            print(pretty_line)
+            linecounter += 1
+
     print("Complete.")
     ser.close()
+
+def format_hexline(data):
+
+    length = len(data)
+    bytes = ""
+    for i in range(length):
+        byte = data[i]
+        bytestr = format(byte, '02x')
+        bytes += bytestr
+        bytes += " "
+        if i % 4 == 3:
+            bytes += " "
+
+    for i in range(length):
+        byte = data[i]
+        bytestr = format(byte, 'c')
+        bytes += bytestr
+
+    return bytes
 
 
 if __name__ == "__main__":

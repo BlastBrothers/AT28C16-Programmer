@@ -39,4 +39,5 @@ The flags are explained below:
 
 - `e`: Erases the AT28C16 (fills with FF's). Does not need a file parameter.
 - `r`: Reads the AT28C16. Does not need a file parameter.
+- `d`: Dumps the contents of the EEPROM to the specified file.
 - `p`: Writes the specified .bin file to the AT28C16.

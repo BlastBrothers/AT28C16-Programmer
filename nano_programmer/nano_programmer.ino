@@ -60,23 +60,16 @@ void writeEEPROM_Byte(int address, byte data) {
   delay(10);
 }
 
-
 /*
- * Read the contents of the EEPROM and print them to the serial monitor.
+ * Send a number of bytes from the start of the EEPROM over serial
  */
-void printContents(int len) {
+void sendContents(int len) {
   for (int base = 0; base <= len; base += 16) {
     byte data[16];
     for (int offset = 0; offset <= 15; offset += 1) {
       data[offset] = readEEPROM_Byte(base + offset);
     }
-
-    char buf[80];
-    sprintf(buf, "%04x:  %02x %02x %02x %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x %02x %02x",
-            base, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
-            data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
-
-    Serial.println(buf);
+    Serial.write(data, 16);
   }
 }
 
@@ -92,16 +85,6 @@ void eraseEEPROM(void)
   }
   Serial.println(" done");
 }
-
-
-/*
- * Reads entire EEPROM
- */
-void dumpEEPROM(void)
-{
-  //
-}
-
 
 /*
  * Writes 64 byte block of data to EEPROM
@@ -168,17 +151,11 @@ void loop() {
       case  'E':
         eraseEEPROM();
         break;
-      case  'R': //TODO if this is going to stay the same as "D", consolidate. Maybe even revise the API so they're the same?
-        Serial.println("Reading EEPROM");
-        printContents(2048);
-        Serial.write('Z');
-        break;
       case  'W':
         writeBlock();
         break;
       case  'D':
-        Serial.println("Dumping EEPROM");
-        printContents(2048);
+        sendContents(2048);
         Serial.write('Z');
         break;
       default:
