@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import serial
+import binascii
 
 LEN_OF_FILE = 2048
 CHUNK_SIZE = 32  # amount of data to send over at once
@@ -81,21 +82,24 @@ def main():
 def format_hexline(data):
 
     length = len(data)
-    bytes = ""
+    stringbytes = ""
     for i in range(length):
         byte = data[i]
-        bytestr = format(byte, '02x')
-        bytes += bytestr
-        bytes += " "
+        stringbyte = format(byte, '02x')
+        stringbytes += stringbyte
+        stringbytes += " "
         if i % 4 == 3:
-            bytes += " "
+            stringbytes += " "
 
     for i in range(length):
         byte = data[i]
-        bytestr = format(byte, 'c')
-        bytes += bytestr
+        if byte <= 16: #filter out control characters
+            stringbytes += "□"
+        else:
+            byteascii = byte.to_bytes(1).decode('iso-8859-1')
+            stringbytes += str(byteascii)
 
-    return bytes
+    return stringbytes
 
 
 if __name__ == "__main__":

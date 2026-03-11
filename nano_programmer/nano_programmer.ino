@@ -27,7 +27,7 @@ void setAddress(int address, bool outputEnable) {
 /*
  * Read a byte from the EEPROM at the specified address.
  */
-byte readEEPROM_Byte(int address) {
+byte readEEPROM(int address) {
   for (int pin = EEPROM_D0; pin <= EEPROM_D7; pin += 1) {
     pinMode(pin, INPUT);
   }
@@ -44,7 +44,7 @@ byte readEEPROM_Byte(int address) {
 /*
  * Write a byte to the EEPROM at the specified address.
  */
-void writeEEPROM_Byte(int address, byte data) {
+void writeEEPROM(int address, byte data) {
   setAddress(address, /*outputEnable*/ false);
   for (int pin = EEPROM_D0; pin <= EEPROM_D7; pin += 1) {
     pinMode(pin, OUTPUT);
@@ -67,7 +67,8 @@ void sendContents(int len) {
   for (int base = 0; base <= len; base += 16) {
     byte data[16];
     for (int offset = 0; offset <= 15; offset += 1) {
-      data[offset] = readEEPROM_Byte(base + offset);
+      delay(10); //TODO actual timing
+      data[offset] = readEEPROM(base + offset);
     }
     Serial.write(data, 16);
   }
@@ -81,7 +82,7 @@ void eraseEEPROM(void)
 {
   Serial.print("Erasing EEPROM");
   for (int address = 0; address <= 2047; address += 1) {
-    writeEEPROM_Byte(address, 0xff);
+    writeEEPROM(address, 0xff);
   }
   Serial.println(" done");
 }
@@ -104,12 +105,12 @@ void writeBlock(void)
   /* write buffer to EEPROM */
   for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
   {
-    writeEEPROM_Byte(global_address + i, data_in_buffer[i]);
+    writeEEPROM(global_address + i, data_in_buffer[i]);
   }
   /* read EEPROM */
   for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
   {
-    data_out_buffer[i] = readEEPROM_Byte(global_address + i);
+    data_out_buffer[i] = readEEPROM(global_address + i);
   }
   /* compare & echo result */
   if (memcmp(data_in_buffer, data_out_buffer, sizeof(data_in_buffer)) != 0)
