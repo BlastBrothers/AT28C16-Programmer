@@ -25,7 +25,7 @@ For this version of the software, you MUST use .bin files _exactly_ 2048 bytes l
 
 Once you have your .bin file, ensure that your arduino nano has the latest version of the nano_programmer firmware on board. Then connect up and issue this command:
 
-`programmer.py [COMPORT] [e/r/p] [\..\file.bin]`
+`programmer.py [COMPORT] [e/r/p/d] [\..\file.bin]`
 
 Example (Windows):
 
