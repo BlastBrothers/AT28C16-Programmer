@@ -19,8 +19,13 @@ def write_file_to_eeprom(rom_f, ser):
         line = bytearray()
         line.extend(dataBytes)
         ser.write(line)
-        print(' '.join(format(b, '02x') for b in line), end=' ')
-        print(ser.read())  # Y or N depending on whether write succeeded
+
+        returnval = ser.read()
+        while returnval == b'N':
+            returnval = ser.read()
+            print("line write error")
+        print("line write success")
+
 
 
 def main():

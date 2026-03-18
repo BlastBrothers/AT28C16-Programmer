@@ -102,21 +102,22 @@ void writeBlock(void)
   {
     data_in_buffer[i] = Serial.read();
   }
+
+  while (memcmp(data_in_buffer, data_out_buffer, sizeof(data_in_buffer)) != 0) { // Keep trying to write until the write goes through
   /* write buffer to EEPROM */
-  for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
-  {
-    writeEEPROM(global_address + i, data_in_buffer[i]);
-  }
-  /* read EEPROM */
-  for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
-  {
-    data_out_buffer[i] = readEEPROM(global_address + i);
-  }
-  /* compare & echo result */
-  if (memcmp(data_in_buffer, data_out_buffer, sizeof(data_in_buffer)) != 0)
     Serial.write('N');
-  else
-    Serial.write('Y');
+    for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
+    {
+      writeEEPROM(global_address + i, data_in_buffer[i]);
+    }
+    /* read EEPROM */
+    for (i = 0; i < RECEIVE_CHUNK_SIZE; i++)
+    {
+      data_out_buffer[i] = readEEPROM(global_address + i);
+    }
+  }
+
+  Serial.write('Y');
 
   /* if correct, increment global_address */
   global_address += RECEIVE_CHUNK_SIZE;
